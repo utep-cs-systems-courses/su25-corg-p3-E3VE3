@@ -3,6 +3,7 @@
 #include "game_logic.h"
 #include "display.h"
 #include "input.h"
+#include "sound.h"
 
 void setup() {
     WDTCTL = WDTPW | WDTTMSEL | WDTCNTCL | WDTSSEL_0 | WDTIS0;
@@ -14,6 +15,7 @@ void setup() {
     setupDisplayPins();
     setupInputPins();
     enableDisplay();
+    sound_init();
 
     gameState = STATE_PAUSED;
     snakeLength = 1;
