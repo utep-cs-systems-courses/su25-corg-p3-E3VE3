@@ -2,6 +2,7 @@
 #include "game_logic.h"
 #include "display.h"
 #include "utils.h"
+#include "sound.h"
 
 volatile unsigned int gameState = STATE_INIT;
 volatile unsigned int direction = DIR_RIGHT;
@@ -30,20 +31,39 @@ void takeTurn() {
 
     switch (direction) {
         case DIR_UP:
-            if (headY == 0) gameState = STATE_GAME_OVER;
-            else headY--;
+            if (headY == 0) {
+                gameState = STATE_GAME_OVER;
+                play_gameover_sound();
+            } else {
+                headY--;
+            }
             break;
+
         case DIR_RIGHT:
-            if (headX == 7) gameState = STATE_GAME_OVER;
-            else headX++;
+            if (headX == 7) {
+                gameState = STATE_GAME_OVER;
+                play_gameover_sound();
+            } else {
+                headX++;
+            }
             break;
+
         case DIR_DOWN:
-            if (headY == 7) gameState = STATE_GAME_OVER;
-            else headY++;
+            if (headY == 7) {
+                gameState = STATE_GAME_OVER;
+                play_gameover_sound();
+            } else {
+                headY++;
+            }
             break;
+
         case DIR_LEFT:
-            if (headX == 0) gameState = STATE_GAME_OVER;
-            else headX--;
+            if (headX == 0) {
+                gameState = STATE_GAME_OVER;
+                play_gameover_sound();
+            } else {
+                headX--;
+            }
             break;
     }
 
@@ -51,6 +71,7 @@ void takeTurn() {
         arr[headX][headY] = 2;
     }
 }
+
 
 void updateDir() {
     if (snakeLength > 1) {
