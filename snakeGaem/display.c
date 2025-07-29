@@ -1,62 +1,54 @@
 #include <msp430.h>
-#include "globals.h"
 #include "display.h"
 
-#define DATA BIT0
-#define CLOCK BIT4
-#define LATCH BIT5
+#define DATA   BIT0
+#define CLOCK  BIT4
+#define LATCH  BIT5
 #define ENABLE BIT6
 
-void setupDisplayPins() {
+void setupDisplayPins(void) {
     P1DIR |= DATA | CLOCK | LATCH | ENABLE;
 }
 
-void enableDisplay() {
+void enableDisplay(void) {
     P1OUT &= ~ENABLE;
 }
 
-void disableDisplay() {
+void disableDisplay(void) {
     P1OUT |= ENABLE;
 }
 
-void pulseClock() {
+static void pulseClock(void) {
     P1OUT |= CLOCK;
     P1OUT &= ~CLOCK;
 }
 
-void latchOn() {
+static void latchOff(void) {
+    P1OUT &= ~LATCH;
+}
+
+static void latchOn(void) {
     P1OUT |= LATCH;
     P1OUT &= ~LATCH;
 }
 
-void latchOff() {
-    P1OUT &= ~LATCH;
-}
-
-void pinWrite(unsigned int bit, unsigned char val) {
+static void pinWrite(unsigned int bit, unsigned char val) {
     if (val) P1OUT |= bit;
-    else P1OUT &= ~bit;
+    else     P1OUT &= ~bit;
 }
 
-void shiftOut(unsigned char val) {
+static void shiftOut(unsigned char val) {
     for (int i = 0; i < 8; i++) {
         pinWrite(DATA, (val >> i) & 0x01);
         pulseClock();
     }
 }
 
-void updateDisplay() {
+void updateDisplay(void) {
     latchOff();
-    for (int i = 7; i >= 0; i--) {
-        shiftOut(concatenateRow(arrToPrint[i]));
+    for (int row = 7; row >= 0; row--) {
+        // Call your fast assembly routine here:
+        shiftOut( fast_concatenate(arrToPrint[row]) );
     }
     latchOn();
-}
-
-int concatenateRow(unsigned int *row) {
-    int result = 0;
-    for (int i = 0; i < 8; i++) {
-        result = (result << 1) | (row[i] ? 1 : 0);
-    }
-    return result;
 }
