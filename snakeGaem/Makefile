@@ -1,32 +1,43 @@
-CPU = msp430g2553
+# ─── Makefile for MSP430 Snake Game ────────────────────────────
 
-CFLAGS = -mmcu=${} -Os -Iinc
-LDFLAGS = -L../lib -lTimer -lLcd
+CPU       = msp430g2553
 
-CC = msp430-elf-gcc
-AS = msp430-elf-gcc -mmcu=${CPU} -c
-LD = msp430-elf-gcc
+# Compiler flags: MCU, optimize, include your headers
+CFLAGS    = -mmcu=$(CPU) -Os -Iinc -I../h
 
-SRC_DIR = src
-ASM_DIR = asm
+# Linker flags: point at your libs, plus TI’s include path
+LDFLAGS   = -L../lib -L/opt/ti/msp430_gcc/include/ -lTimer -lLcd
 
-SRCS = $(wildcard ${SRC_DIR}/*.c)
-OBJS = ${SRCS:.c=.o} $(ASM_DIR)/custom.o
+# Tools
+CC        = msp430-elf-gcc
+AS        = msp430-elf-gcc -mmcu=$(CPU) -c
 
-TARGET = snake_game.elf
+SRC_DIR   = src
+ASM_DIR   = asm
+
+SRCS      = $(wildcard $(SRC_DIR)/*.c)
+OBJS      = $(SRCS:$(SRC_DIR)/%.c=$(SRC_DIR)/%.o) \
+            $(ASM_DIR)/custom.o
+
+TARGET    = snake_game.elf
 
 all: $(TARGET)
 
+# Link everything into the final .elf
 $(TARGET): $(OBJS)
-	${LD} ${LDFLAGS} -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
-${SRC_DIR}/%.o: ${SRC_DIR}/%.c
-	${CC} ${CFLAGS} -c -o $@ $<
+# Compile C modules
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-${ASM_DIR}/custom.o: ${ASM_DIR}/custom.s
-	${AS} -o $@ $<
+# Assemble the optimized row-concat routine
+$(ASM_DIR)/custom.o: $(ASM_DIR)/custom.s
+	$(AS) -o $@ $<
 
 clean:
-	rm -f ${SRC_DIR}/*.o
-	rm -f ${ASM_DIR}/*.o
-	rm -f ${TARGET}
+	rm -f $(SRC_DIR)/*.o
+	rm -f $(ASM_DIR)/*.o
+	rm -f $(TARGET)
+
+# ───────────────────────────────────────────────────────────────
