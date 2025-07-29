@@ -1,32 +1,32 @@
-CC = msp430-gcc
-AS = msp430-gcc
-LD = msp430-gcc
+CPU = msp430g2553
 
-CFLAGS = -mmcu=msp430g2553 -std=c99 -Wall -Werror -Os -Iinc
-ASFLAGS = -mmcu=msp430g2553
-LDFLAGS = -mmcu=msp430g2553
+CFLAGS = -mmcu=${} -Os -Iinc
+LDFLAGS = -L../lib -lTimer -lLcd
+
+CC = msp430-elf-gcc
+AS = msp430-elf-gcc -mmcu=${CPU} -c
+LD = msp430-elf-gcc
 
 SRC_DIR = src
-INC_DIR = inc
 ASM_DIR = asm
 
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(SRCS:.c=.o) $(ASM_DIR)/custom.o
+SRCS = $(wildcard ${SRC_DIR}/*.c)
+OBJS = ${SRCS:.c=.o} $(ASM_DIR)/custom.o
 
 TARGET = snake_game.elf
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	${LD} ${LDFLAGS} -o $@ $^
 
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+${SRC_DIR}/%.o: ${SRC_DIR}/%.c
+	${CC} ${CFLAGS} -c -o $@ $<
 
-$(ASM_DIR)/custom.o: $(ASM_DIR)/custom.s43
-	$(AS) $(ASFLAGS) -c $< -o $@
+${ASM_DIR}/custom.o: ${ASM_DIR}/custom.s
+	${AS} -o $@ $<
 
 clean:
-	rm -f $(SRC_DIR)/*.o
-	rm -f $(ASM_DIR)/*.o
-	rm -f $(TARGET)
+	rm -f ${SRC_DIR}/*.o
+	rm -f ${ASM_DIR}/*.o
+	rm -f ${TARGET}
