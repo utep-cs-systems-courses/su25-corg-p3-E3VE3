@@ -5,32 +5,31 @@ INC       := -Iinc
 
 CC        := msp430-elf-gcc
 
-# All C sources in the project root
+# gather all .c → .o
 CSRCS     := $(wildcard *.c)
-# Convert them to .o
 COBJS     := $(CSRCS:.c=.o)
 
-# One assembly source in asm/
+# one assembly routine
 AOBJS     := asm/custom.o
 
-# Everything to link
 OBJS      := $(COBJS) $(AOBJS)
-
 TARGET    := snake_game.elf
+
+LDFLAGS   := -Wl,-T,msp430g2553.ld
 
 .PHONY: all clean
 
 all: $(TARGET)
 
-# Link step: includes main.o, game_logic.o, display.o, etc., plus custom.o
+# link everything (no -mmcu here, it's only needed at compile time)
 $(TARGET): $(OBJS)
-	$(CC) $(MCUFLAG) $(OPT) $(INC) -o $@ $^
+	$(CC) $(MCUFLAG) $(OPT) $(INC) $(LDFLAGS) -o $@ $^
 
-# Compile any .c in the root
+# compile C files
 %.o: %.c
 	$(CC) $(MCUFLAG) $(OPT) $(INC) -c $< -o $@
 
-# Assemble your custom row‑concatenation routine
+# assemble the fast routine
 asm/custom.o: asm/custom.s
 	$(CC) $(MCUFLAG) $(OPT) -c $< -o $@
 
