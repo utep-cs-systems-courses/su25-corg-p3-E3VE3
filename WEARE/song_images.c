@@ -54,4 +54,3 @@ void drawDefault() {
     drawPixel(centerCol + x, toothY, COLOR_BLACK);
   }
 }
-}

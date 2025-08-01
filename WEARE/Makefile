@@ -20,7 +20,7 @@ install: libLcd.a
 	mv $^ ../lib
 	cp *.h ../h
 
-main.elf: ${COMMON_OBJECTS} main.o led.o switches.o statemachines.o buzzer.o wdInterruptHandler.o p2_interrupt_handler.o libLcd.a ../lib/libTimer.a
+main.elf: ${COMMON_OBJECTS} main.o led.o switches.o statemachines.o buzzer.o wdInterrupthandler.o p2_interrupt_handler.o libLcd.a ../lib/libTimer.a
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
 
 load: main.elf

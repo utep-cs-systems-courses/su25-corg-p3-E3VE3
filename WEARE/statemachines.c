@@ -3,6 +3,7 @@
 #include "switches.h"
 #include "statemachines.h"
 #include "buzzer.h"
+#include "lcdutils.h"
 #include "lcddraw.h"
 #include "song_images.h"
 
@@ -76,7 +77,7 @@ static void drawCircle(u_int bg) {
 
 void next_state(int s) {
     leds_off();
-    white_led_off();
+ 
 
     // flash then draw + play
     led_flash(3);
