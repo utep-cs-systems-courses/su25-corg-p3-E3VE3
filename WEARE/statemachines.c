@@ -7,6 +7,8 @@
 #include "lcddraw.h"
 #include "song_images.h"
 
+extern void delay_cycles(unsigned int count);
+
 // Draw a filled circle in COLOR_GOLD with text background
 static void normalSkull(u_int color) {
     clearScreen(color);
@@ -105,7 +107,7 @@ static void bounceSmiley(u_int bg) {
     clearScreen(bg);
     drawSmiley(x, y);
     // simple delay
-    for (volatile int i = 0; i < 5000; i++);
+    delay_cycles(5000);
     // bounce off edges
     if (x + 10 >= screenWidth  || x - 10 <= 0) dx = -dx;
     if (y + 10 >= screenHeight || y - 10 <= 0) dy = -dy;
