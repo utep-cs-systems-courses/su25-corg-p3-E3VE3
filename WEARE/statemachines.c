@@ -75,6 +75,45 @@ static void drawCircle(u_int bg) {
     }
 }
 
+static void drawSmiley(int cx, int cy) {
+  const int r = 10;
+  // face
+  for (int dy = -r; dy <= r; dy++)
+    for (int dx = -r; dx <= r; dx++)
+      if (dx*dx + dy*dy <= r*r)
+        drawPixel(cx + dx, cy + dy, COLOR_YELLOW);
+  // eyes
+  for (int dx = -4; dx <= -1; dx++)
+    for (int dy = -3; dy <= -1; dy++)
+      drawPixel(cx + dx, cy + dy, COLOR_BLACK);
+  for (int dx =  1; dx <=  4; dx++)
+    for (int dy = -3; dy <= -1; dy++)
+      drawPixel(cx + dx, cy + dy, COLOR_BLACK);
+  // smiling mouth
+  for (int dx = -4; dx <= 4; dx++) {
+    int dy = (dx*dx)/6;
+    drawPixel(cx + dx, cy +  4 + dy, COLOR_BLACK);
+  }
+}
+
+// Bounce the smiley like a "DVD logo" forever
+static void bounceSmiley(u_int bg) {
+  int x = screenWidth/2, y = screenHeight/2;
+  int dx =  2,      dy =  2;
+  while (1) {
+    clearScreen(bg);
+    drawSmiley(x, y);
+    // simple delay
+    for (volatile int i = 0; i < 5000; i++);
+    // bounce off edges
+    if (x + 10 >= screenWidth  || x - 10 <= 0) dx = -dx;
+    if (y + 10 >= screenHeight || y - 10 <= 0) dy = -dy;
+    x += dx;
+    y += dy;
+  }
+}
+
+
 void next_state(int s) {
     leds_off();
  
@@ -93,7 +132,7 @@ void next_state(int s) {
         oot();
         break;
     case 3:
-        drawCircle(COLOR_RED);
+        bounceSmiley(COLOR_RED);
         oot();
         break;
     case 4:
