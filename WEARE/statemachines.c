@@ -98,6 +98,7 @@ static void drawSmiley(int cx, int cy) {
 
 // Bounce the smiley like a "DVD logo" forever
 static void bounceSmiley(u_int bg) {
+  clearScreen(bg);
   int x = screenWidth/2, y = screenHeight/2;
   int dx =  2,      dy =  2;
   while (1) {
